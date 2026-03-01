@@ -2,7 +2,7 @@
 By: Joneil lan Morano
 
 ## Summary
-This mini-project demonstrates practical knowledge and hands-on experience in spotting and exploiting web vulnerabilities and using AWS GuardDuty to detect and analyze threats. With this, we will deploy a vulnerable web application (OWASP Juice Shop) on purpose, use offensive techniques to steal credentials and sensitive data from an AWS EC2 instance, and detect and analyze these attacks using GuardDuty. At the end of this project, an extension for implementing malware protection on AWS resources will also be demonstrated.
+This mini-project demonstrates practical knowledge and hands-on experience in spotting and exploiting web vulnerabilities and using AWS GuardDuty to detect and analyze threats. With this, we will deploy a vulnerable web application (OWASP Juice Shop) on purpose, use offensive techniques to steal credentials and sensitive data from an AWS EC2 instance, and detect and analyze these attacks using GuardDuty. 
 
 ## Architecture and Tech Stack
 The infrastructure relies on different resources across three main categories: compute, storage, and networking. 
