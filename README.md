@@ -4,6 +4,8 @@ By: Joneil lan Morano
 ## Summary
 This mini-project demonstrates practical knowledge and hands-on experience in spotting and exploiting web vulnerabilities and using AWS GuardDuty to detect and analyze threats. With this, we will deploy a vulnerable web application (OWASP Juice Shop) on purpose, use offensive techniques to steal credentials and sensitive data from an AWS EC2 instance, and detect and analyze these attacks using GuardDuty. 
 
+Credit to NextWork for this hands-on activity.
+
 ## Architecture and Tech Stack
 The infrastructure relies on different resources across three main categories: compute, storage, and networking. 
 * Services Used: Amazon GuardDuty, Amazon CloudFront, Amazon S3, AWS CloudFormation, and the OWASP Juice Shop. 
